@@ -1,20 +1,22 @@
 package tcc.controller_bt.model;
 
-import android.content.Intent;
+import android.os.Parcelable;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 
 public interface APIConnectionInterface {
-    void connect(String address);
+    public static String EXTRA_DEVICE_DATA = "device_data";
+    public static int STATUS_CONNECTION = 1;
 
-    void disconnect();
+    public void connect(String connection_content);
 
-    void sendData(byte data);
+    public void disconnect();
 
-    void sendData(String data);
+    public void sendData(byte data);
 
-    int receiveData();
+    public void sendData(String data);
 
-    public ArrayList<Intent> verifyBluetoothStatus();
+    public int receiveData();
 
+    public void verifyConnectionStatus();
 }

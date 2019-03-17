@@ -1,4 +1,4 @@
-package tcc.controller_bt.controller;
+package tcc.controller_bt.view;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -14,6 +14,7 @@ import android.widget.TextView;
 import java.util.Set;
 
 import tcc.controller_bt.R;
+import tcc.controller_bt.model.APIConnectionInterface;
 import tcc.controller_bt.model.BluetoothManagerAdapter;
 
 public class DevicesList extends AppCompatActivity {
@@ -62,8 +63,8 @@ public class DevicesList extends AppCompatActivity {
             String address = info.substring(info.length() - 17);
 
             Intent intent = new Intent();
-            intent.putExtra(BluetoothManagerAdapter.EXTRA_DEVICE_ADDRESS, address);
-            setResult(1,intent);
+            intent.putExtra(BluetoothManagerAdapter.EXTRA_DEVICE_DATA, address);
+            setResult(APIConnectionInterface.STATUS_CONNECTION,intent);
             finish();
         }
     };

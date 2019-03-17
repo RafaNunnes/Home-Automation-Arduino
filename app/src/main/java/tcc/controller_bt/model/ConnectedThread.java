@@ -41,24 +41,13 @@ public class ConnectedThread extends Thread
             }
         }
     }*/
+
     //Envio dos dados
     public void write(byte input) throws IOException
     {
         mmOutStream.write(input);
-
-        /*if(infrared_code != null)
-        {
-            mmOutStream.write(infrared_code.getBytes());
-
-            char[] code = String.valueOf(infrared_code).toCharArray();
-
-            for(char chars = 0; chars<code.length; chars++)
-            {
-                System.out.println(code[chars]);
-                mmOutStream.write(code[chars]);
-            }
-        }*/
     }
+
     public void write(String infrared_code) throws IOException
     {
          mmOutStream.write(infrared_code.getBytes());
