@@ -2,6 +2,9 @@ package tcc.controller_bt.model;
 
 import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 
 public class DimmerButton extends DeviceControlButton {
@@ -22,9 +25,10 @@ public class DimmerButton extends DeviceControlButton {
     }
 
     @Override
-    public View generateControlButton(Context context, final APIConnectionInterface manager_connection) {
+    public View generateControlButton(Context context, final APIConnectionInterface manager_connection, ViewGroup room_screen_layout) {
         final SeekBar new_button = new SeekBar(context);
         new_button.setTag(1);
+        new_button.setMax(120);
 
         new_button.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 

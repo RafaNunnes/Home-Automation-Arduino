@@ -2,6 +2,9 @@ package tcc.controller_bt.model;
 
 import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import java.io.Serializable;
 
@@ -26,5 +29,5 @@ public abstract class DeviceControlButton implements Serializable {
         return logical_port;
     }
 
-    public abstract View generateControlButton(Context context, final APIConnectionInterface manager_connection);
+    public abstract View generateControlButton(Context context, final APIConnectionInterface manager_connection, final ViewGroup room_screen_layout);
 }

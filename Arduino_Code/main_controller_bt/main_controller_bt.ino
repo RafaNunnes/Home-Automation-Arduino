@@ -2,7 +2,7 @@
 IRsend irsend;
 boolean zero_crossing_enabled = false;
 int logical_port_dimmer;  // Pino digital definido como controlador do MOC3011
-int dimming = 120; // O dimmer começa com a menor potência fornecida, ou seja, com a carga fora de funcionamento
+volatile int dimming = 120; // O dimmer começa com a menor potência fornecida, ou seja, com a carga fora de funcionamento
 
 byte control_type_received, logical_port_received;
 byte format_type_received, num_bits_received;
@@ -75,12 +75,13 @@ void loop()
           dimmer_value = Serial.read();
         }
         
-        Serial.println(dimmer_value);
-        
         if(dimmer_value == 255)
         {
           break;
         }
+
+        dimmerCircuit(logical_port_received, dimmer_value);
+        Serial.println(dimmer_value);
       }
       break;   
   }
@@ -113,8 +114,21 @@ void switchedCircuit(byte logical_port)
 
 void dimmerCircuit(byte logical_port, byte content)
 {
-  int remap = map (content, 0, 255, 120, 0);  // Simula um potenciômetro e inverte a sequência dos números 
+  int remap = map (content, 0, 128 , 120, 0);  // Simula um potenciômetro e inverte a sequência dos números 
   delay(1);
+
+  /*if(remap <= 100){                 
+     dimming = remap;
+     
+     logical_port_dimmer = logical_port;
+     delay(1);     
+     zero_crossing_enabled = true;       //  Habilita o cálculo de passagem por zero da rede
+  }
+  else{                                                           
+      digitalWrite(logical_port, LOW);
+      delay(1);
+      zero_crossing_enabled = false;     // Desabilita o cálculo de passagem por zero da rede
+  }*/
   
   if(remap > 100){                                                           
       digitalWrite(logical_port, LOW);

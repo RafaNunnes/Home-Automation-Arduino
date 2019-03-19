@@ -2,7 +2,10 @@ package tcc.controller_bt.model;
 
 import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 public class InfraredButton extends DeviceControlButton {
     private String infrared_code;
@@ -43,7 +46,7 @@ public class InfraredButton extends DeviceControlButton {
     }
 
     @Override
-    public View generateControlButton(Context context, final APIConnectionInterface manager_connection) {
+    public View generateControlButton(Context context, final APIConnectionInterface manager_connection, ViewGroup room_screen_layout) {
         final Button new_button = new Button(context);
 
         new_button.setText(name_button);
@@ -52,11 +55,16 @@ public class InfraredButton extends DeviceControlButton {
         new_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                manager_connection.sendData(getControlType());
+                /*manager_connection.sendData(getControlType());
                 manager_connection.sendData(getLogicalPort());
                 manager_connection.sendData(getFormatType());
                 manager_connection.sendData(getNumBits());
-                manager_connection.sendData(getInfraredCode());
+                manager_connection.sendData(getInfraredCode());*/
+                manager_connection.sendData((byte) 3);
+                manager_connection.sendData((byte) 3);
+                manager_connection.sendData((byte) 127);
+                manager_connection.sendData((byte) 32);
+                manager_connection.sendData("3772793023");
             }
         });
 
