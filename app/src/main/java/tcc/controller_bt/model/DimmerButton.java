@@ -3,17 +3,16 @@ package tcc.controller_bt.model;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 
 public class DimmerButton extends DeviceControlButton {
     private byte current_progress_value;
 
-    public DimmerButton(String name, byte type, byte port){
+    public DimmerButton(long id, String name, byte type, byte port){
         setControlType(type);
         setLogicalPort(port);
         this.name_button = name;
+        this.id = id;
     }
 
     public byte getCurrentProgressValue() {

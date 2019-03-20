@@ -7,10 +7,11 @@ import android.widget.Button;
 
 public class SwitchButton extends DeviceControlButton {
 
-    public SwitchButton(String name, byte type, byte port){
+    public SwitchButton(long id, String name, byte type, byte port){
         setControlType(type);
         setLogicalPort(port);
         this.name_button = name;
+        this.id = id;
     }
 
     @Override

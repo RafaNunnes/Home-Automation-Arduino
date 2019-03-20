@@ -1,7 +1,6 @@
 package tcc.controller_bt.model;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.text.Editable;
 import android.text.InputType;
@@ -14,12 +13,12 @@ import android.widget.TextView;
 import tcc.controller_bt.view.ButtonCreationActivity;
 
 public class LayoutCreatorFacade {
-    Activity button_creation_activity;
-    GridLayout design_button_layout;
-    DynamicViews dynamic_views;
-    Button confirm_button;
+    private Activity button_creation_activity;
+    private GridLayout design_button_layout;
+    private DynamicViews dynamic_views;
+    private Button confirm_button;
 
-    DeviceControlButton device_control_button;
+    private DataBaseDAOImpl data_base;
 
     // Inputs referentes ao Circuito Chaveado
     private EditText switch_input_name, switch_input_logical_port;
@@ -29,14 +28,19 @@ public class LayoutCreatorFacade {
 
     // Inputs referentes ao Circuito Infravermelho
     private EditText infrared_input_name;
-    byte infrared_input_logical_port, infrared_input_format, infrared_input_bits;
+    int infrared_input_logical_port, infrared_input_format, infrared_input_bits;
     String infrared_input_code;
+
+    private int button_type_flag;
 
     public LayoutCreatorFacade(Activity activity, GridLayout layout, Button button){
         design_button_layout = layout;
         dynamic_views = new DynamicViews(activity.getApplicationContext());
         confirm_button = button;
         button_creation_activity = activity;
+        data_base = new DataBaseDAOImpl();
+
+        //data_base.createTable();    //  Cria a tabela Botões
     }
 
     public void generateSwitchLayout(){
@@ -119,9 +123,10 @@ public class LayoutCreatorFacade {
             boolean confirm = (!switch_input_name.getText().toString().trim().isEmpty()
                                 && !switch_input_logical_port.getText().toString().trim().isEmpty());
             if(confirm){
-                device_control_button = new SwitchButton(switch_input_name.getText().toString(),(byte) 1,
+                /*device_control_button = new SwitchButton(switch_input_name.getText().toString(),(byte) 1,
                         Byte.valueOf(switch_input_logical_port.getText().toString()));
-
+                        */
+                button_type_flag = DeviceControlButton.SWITCH_TYPE;
                 confirm_button.setEnabled(true);
             }
         }
@@ -143,9 +148,10 @@ public class LayoutCreatorFacade {
             boolean confirm = (!dimmer_input_name.getText().toString().trim().isEmpty()
                     && !dimmer_input_logical_port.getText().toString().trim().isEmpty());
             if(confirm){
-                device_control_button = new DimmerButton(dimmer_input_name.getText().toString(),(byte) 2,
+                /*device_control_button = new DimmerButton(dimmer_input_name.getText().toString(),(byte) 2,
                         Byte.valueOf(dimmer_input_logical_port.getText().toString()));
-
+                        */
+                button_type_flag = DeviceControlButton.DIMMER_TYPE;
                 confirm_button.setEnabled(true);
             }
         }
@@ -166,10 +172,11 @@ public class LayoutCreatorFacade {
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             boolean confirm = (!infrared_input_name.getText().toString().trim().isEmpty());
             if(confirm){
-                device_control_button = new InfraredButton(infrared_input_name.getText().toString(),(byte) 3,
+                /*device_control_button = new InfraredButton(infrared_input_name.getText().toString(),(byte) 3,
                         infrared_input_logical_port, infrared_input_code,
                         infrared_input_format, infrared_input_bits);
-
+                        */
+                button_type_flag = DeviceControlButton.INFRARED_TYPE;
                 confirm_button.setEnabled(true);
             }
         }
@@ -181,9 +188,31 @@ public class LayoutCreatorFacade {
     };
 
     public void sendNewButton() {
-        Intent intent = new Intent();
-        intent.putExtra(ButtonCreationActivity.EXTRA_BUTTON_DATA, device_control_button);
-        button_creation_activity.setResult(APIConnectionInterface.STATUS_CONNECTION,intent);
+        long id_returned = -1;
+
+        switch (button_type_flag){
+            case DeviceControlButton.SWITCH_TYPE:
+                id_returned = data_base.addControlButton(switch_input_name.getText().toString(), DeviceControlButton.SWITCH_TYPE,
+                        Integer.valueOf(switch_input_logical_port.getText().toString()), null, 0,0);
+                break;
+
+            case DeviceControlButton.DIMMER_TYPE:
+                id_returned = data_base.addControlButton(dimmer_input_name.getText().toString(), DeviceControlButton.DIMMER_TYPE,
+                        Integer.valueOf(dimmer_input_logical_port.getText().toString()), null, 0, 0);
+                break;
+
+            case DeviceControlButton.INFRARED_TYPE:
+                id_returned = data_base.addControlButton(infrared_input_name.getText().toString(), DeviceControlButton.INFRARED_TYPE,
+                        infrared_input_logical_port, infrared_input_code, infrared_input_format, infrared_input_bits);
+                break;
+        }
+
+        if(id_returned != -1){
+            Intent intent = new Intent();
+            intent.putExtra(ButtonCreationActivity.EXTRA_BUTTON_DATA, id_returned);
+            button_creation_activity.setResult(APIConnectionInterface.STATUS_CONNECTION,intent);
+        }
+
         button_creation_activity.finish();
     }
 }

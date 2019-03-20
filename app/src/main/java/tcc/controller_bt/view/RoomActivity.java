@@ -66,8 +66,8 @@ public class RoomActivity extends AppCompatActivity {
             case RoomManager.BUTTON_CREATION:
                 if(data != null){
                     chosen_data = data.getExtras();
-                    DeviceControlButton button_received = (DeviceControlButton) chosen_data.getSerializable(ButtonCreationActivity.EXTRA_BUTTON_DATA);
-                    room_manager.updateRoomScreen(button_received);
+                    long id_button = chosen_data.getLong(ButtonCreationActivity.EXTRA_BUTTON_DATA);
+                    room_manager.updateRoomScreen(id_button);
                 }
                 break;
 

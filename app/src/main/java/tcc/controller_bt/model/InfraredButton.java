@@ -4,21 +4,20 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 public class InfraredButton extends DeviceControlButton {
     private String infrared_code;
     private byte format_type;
     private byte num_bits;
 
-    public InfraredButton(String name, byte type, byte port, String code, byte format, byte bits){
+    public InfraredButton(long id, String name, byte type, byte port, String code, byte format, byte bits){
         setControlType(type);
         setLogicalPort(port);
         setInfraredCode(code);
         setFormatType(format);
         setNumBits(bits);
         this.name_button = name;
+        this.id = id;
     }
 
     public String getInfraredCode() {

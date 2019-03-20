@@ -3,15 +3,25 @@ package tcc.controller_bt.model;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-
 import java.io.Serializable;
 
 public abstract class DeviceControlButton implements Serializable {
+    public final static int SWITCH_TYPE = 1;
+    public final static int DIMMER_TYPE = 2;
+    public final static int INFRARED_TYPE = 3;
+
+    protected long id;
+    protected String name_button;
     protected byte control_type;
     protected byte logical_port;
-    protected String name_button;
+
+    public String getName(){
+        return name_button;
+    }
+
+    public long getId(){
+        return id;
+    }
 
     protected void setControlType(byte control_type) {
         this.control_type = control_type;
@@ -30,4 +40,5 @@ public abstract class DeviceControlButton implements Serializable {
     }
 
     public abstract View generateControlButton(Context context, final APIConnectionInterface manager_connection, final ViewGroup room_screen_layout);
+
 }
