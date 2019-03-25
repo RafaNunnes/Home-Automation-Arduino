@@ -1,31 +1,96 @@
 package tcc.controller_bt.model;
 
-import android.content.Context;
+import android.app.Activity;
+import android.app.Dialog;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.GridLayout;
+
+import tcc.controller_bt.R;
 
 public class SwitchButton extends DeviceControlButton {
 
     public SwitchButton(long id, String name, byte type, byte port){
         setControlType(type);
         setLogicalPort(port);
-        this.name_button = name;
+        setName(name);
         this.id = id;
     }
 
     @Override
-    public View generateControlButton(final Context context, final APIConnectionInterface manager_connection, final ViewGroup room_linear_layout) {
-        final Button new_button = new Button(context);
+    public View generateControlButton(final Activity activity, final APIConnectionInterface manager_connection, final ViewGroup room_linear_layout) {
+        //final Button new_button = new Button(context);
+        final Button new_button = new Button(MyApp.getContext());
 
         new_button.setText(name_button);
-        new_button.setTag(1);
+        //  Tag utilizada para editar/remover o botão
+        new_button.setTag(getId());
 
         new_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 manager_connection.sendData(getControlType());
                 manager_connection.sendData(getLogicalPort());
+
+                //  Para Editar um botão já criado
+                //((Button) room_linear_layout.findViewWithTag(new_button.getTag())).setText("MUDEI");
+            }
+        });
+
+        new_button.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                final DataBaseDAOImpl data_base = new DataBaseDAOImpl();
+
+                //  Necessário para criar o popup de edição de botão
+                final Dialog my_dialog = new Dialog(activity);
+                my_dialog.setContentView(R.layout.edit_button_popup);
+
+                GridLayout id_edit_button_layout = my_dialog.findViewById(R.id.IdEditButtonLayout);
+                Button id_confirm_edit = my_dialog.findViewById(R.id.IdConfirmEdit);
+                Button id_delete_button = my_dialog.findViewById(R.id.IdDeleteButton);
+
+                final LayoutCreatorFacade layout_creator_facade = new LayoutCreatorFacade(activity, id_edit_button_layout, id_confirm_edit);
+                layout_creator_facade.generateSwitchLayout();
+
+                id_delete_button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //  Exclui o botão do banco de dados
+                        if(data_base.removeControlButton(SwitchButton.this)){
+                            //  Exclui o botão da tela do usuário (layout)
+                            room_linear_layout.removeView(room_linear_layout.findViewWithTag(new_button.getTag()));
+                        }
+
+                        //  Fecha a janela popup
+                        my_dialog.dismiss();
+                    }
+                });
+
+                id_confirm_edit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //  Salva as novas configurações no banco de dados
+                        if(layout_creator_facade.updateButton(SwitchButton.this)){
+                            //  Atualiza os dados do botão
+                            SwitchButton updated_button = (SwitchButton) data_base.getControlButtonById(getId());
+                            setName(updated_button.getName());
+                            setLogicalPort(updated_button.getLogicalPort());
+
+                            //  Atualiza o botão na tela do usuário (layout)
+                            ((Button) room_linear_layout.findViewWithTag(new_button.getTag())).setText(getName());
+                        }
+
+                        //  Fecha a janela popup
+                        my_dialog.dismiss();
+                    }
+                });
+
+                //my_dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                my_dialog.show();
+
+                return true;
             }
         });
 

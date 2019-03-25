@@ -39,8 +39,6 @@ public class LayoutCreatorFacade {
         confirm_button = button;
         button_creation_activity = activity;
         data_base = new DataBaseDAOImpl();
-
-        //data_base.createTable();    //  Cria a tabela Botões
     }
 
     public void generateSwitchLayout(){
@@ -123,11 +121,10 @@ public class LayoutCreatorFacade {
             boolean confirm = (!switch_input_name.getText().toString().trim().isEmpty()
                                 && !switch_input_logical_port.getText().toString().trim().isEmpty());
             if(confirm){
-                /*device_control_button = new SwitchButton(switch_input_name.getText().toString(),(byte) 1,
-                        Byte.valueOf(switch_input_logical_port.getText().toString()));
-                        */
                 button_type_flag = DeviceControlButton.SWITCH_TYPE;
                 confirm_button.setEnabled(true);
+            } else {
+                confirm_button.setEnabled(false);
             }
         }
 
@@ -148,11 +145,10 @@ public class LayoutCreatorFacade {
             boolean confirm = (!dimmer_input_name.getText().toString().trim().isEmpty()
                     && !dimmer_input_logical_port.getText().toString().trim().isEmpty());
             if(confirm){
-                /*device_control_button = new DimmerButton(dimmer_input_name.getText().toString(),(byte) 2,
-                        Byte.valueOf(dimmer_input_logical_port.getText().toString()));
-                        */
                 button_type_flag = DeviceControlButton.DIMMER_TYPE;
                 confirm_button.setEnabled(true);
+            } else {
+                confirm_button.setEnabled(false);
             }
         }
 
@@ -172,12 +168,10 @@ public class LayoutCreatorFacade {
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             boolean confirm = (!infrared_input_name.getText().toString().trim().isEmpty());
             if(confirm){
-                /*device_control_button = new InfraredButton(infrared_input_name.getText().toString(),(byte) 3,
-                        infrared_input_logical_port, infrared_input_code,
-                        infrared_input_format, infrared_input_bits);
-                        */
                 button_type_flag = DeviceControlButton.INFRARED_TYPE;
                 confirm_button.setEnabled(true);
+            } else {
+                confirm_button.setEnabled(false);
             }
         }
 
@@ -214,5 +208,11 @@ public class LayoutCreatorFacade {
         }
 
         button_creation_activity.finish();
+    }
+
+    public boolean updateButton(DeviceControlButton control_button){
+        control_button.setName(switch_input_name.getText().toString());
+        control_button.setLogicalPort(Byte.valueOf(switch_input_logical_port.getText().toString()));
+        return data_base.updateControlButton(control_button);
     }
 }

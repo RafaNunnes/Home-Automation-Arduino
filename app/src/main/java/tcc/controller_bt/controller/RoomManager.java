@@ -62,7 +62,7 @@ public class RoomManager {
         control_buttons = data_base.getControlButtons();
 
         for(DeviceControlButton button : control_buttons){
-            room_screen_buttons.addView(button.generateControlButton(room_activity.getApplicationContext(), manager_connection, room_screen_buttons));
+            room_screen_buttons.addView(button.generateControlButton(room_activity, manager_connection, room_screen_buttons));
         }
     }
 
@@ -70,7 +70,7 @@ public class RoomManager {
         //Quando retornar da activity de criação de botão, adicionar o botão na RoomActivity
         //room_screen_buttons.addView(button_received.generateControlButton(room_activity.getApplicationContext(),manager_connection,room_screen_buttons));
         control_buttons.add(data_base.getControlButtonById(id));
-        room_screen_buttons.addView(data_base.getControlButtonById(id).generateControlButton(room_activity.getApplicationContext(), manager_connection, room_screen_buttons));
+        room_screen_buttons.addView(data_base.getControlButtonById(id).generateControlButton(room_activity, manager_connection, room_screen_buttons));
     }
 
 

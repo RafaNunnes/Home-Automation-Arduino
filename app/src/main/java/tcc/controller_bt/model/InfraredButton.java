@@ -1,6 +1,6 @@
 package tcc.controller_bt.model;
 
-import android.content.Context;
+import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -45,11 +45,11 @@ public class InfraredButton extends DeviceControlButton {
     }
 
     @Override
-    public View generateControlButton(Context context, final APIConnectionInterface manager_connection, ViewGroup room_screen_layout) {
-        final Button new_button = new Button(context);
+    public View generateControlButton(Activity activity, final APIConnectionInterface manager_connection, ViewGroup room_screen_layout) {
+        final Button new_button = new Button(activity.getApplicationContext());
 
         new_button.setText(name_button);
-        new_button.setTag(1);
+        new_button.setTag(getId());
 
         new_button.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -28,6 +28,7 @@ public class DynamicViews {
     public EditText descriptionEditText(int input_type){
         final ViewGroup.LayoutParams layout_param = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         final EditText edit_text = new EditText(button_creation_context);
+        edit_text.setLayoutParams(layout_param);
         edit_text.setMinEms(2);
         edit_text.setTextColor(Color.rgb(0,0,0));
         edit_text.setInputType(input_type);

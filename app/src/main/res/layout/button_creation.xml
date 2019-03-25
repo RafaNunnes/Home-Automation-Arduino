@@ -29,6 +29,8 @@
             android:id="@+id/IdSwitchControl"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:textColor="#FFF"
+            android:background="#000"
             android:layout_weight="1"
             android:text="Controle Chaveado" />
 
@@ -36,6 +38,8 @@
             android:id="@+id/IdDimmerControl"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:textColor="#FFF"
+            android:background="#000"
             android:layout_weight="1"
             android:text="Controle Dimmer"/>
 
@@ -43,6 +47,8 @@
             android:id="@+id/IdInfraredControl"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:textColor="#FFF"
+            android:background="#000"
             android:layout_weight="1"
             android:text="Controle Infravermelho"/>
 
@@ -66,6 +72,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Confirmar"
+            android:background="@color/colorPrimary"
+            android:textSize="15dp"
             android:enabled="false"/>
     </LinearLayout>
 

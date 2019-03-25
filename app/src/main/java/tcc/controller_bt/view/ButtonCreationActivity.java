@@ -1,5 +1,6 @@
 package tcc.controller_bt.view;
 
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -32,6 +33,9 @@ public class ButtonCreationActivity extends AppCompatActivity {
         id_switch_control.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                id_switch_control.setTextColor(Color.rgb(0,255,0));
+                id_dimmer_control.setTextColor(Color.rgb(255,255,255));
+                id_infrared_control.setTextColor(Color.rgb(255,255,255));
                 button_creation_manager.setSwitchLayout();
             }
         });
@@ -39,6 +43,9 @@ public class ButtonCreationActivity extends AppCompatActivity {
         id_dimmer_control.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                id_switch_control.setTextColor(Color.rgb(255,255,255));
+                id_dimmer_control.setTextColor(Color.rgb(0,255,0));
+                id_infrared_control.setTextColor(Color.rgb(255,255,255));
                 button_creation_manager.setDimmerLayout();
             }
         });
@@ -46,6 +53,9 @@ public class ButtonCreationActivity extends AppCompatActivity {
         id_infrared_control.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                id_switch_control.setTextColor(Color.rgb(255,255,255));
+                id_dimmer_control.setTextColor(Color.rgb(255,255,255));
+                id_infrared_control.setTextColor(Color.rgb(0,255,0));
                 button_creation_manager.setInfraredLayout();
             }
         });
