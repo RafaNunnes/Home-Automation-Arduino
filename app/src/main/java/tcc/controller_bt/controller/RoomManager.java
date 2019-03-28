@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 
@@ -11,6 +12,7 @@ import tcc.controller_bt.model.APIConnectionInterface;
 import tcc.controller_bt.model.BluetoothManagerAdapter;
 import tcc.controller_bt.model.DataBaseDAOImpl;
 import tcc.controller_bt.model.DeviceControlButton;
+import tcc.controller_bt.model.SwitchButton;
 import tcc.controller_bt.view.ButtonCreationActivity;
 
 public class RoomManager {
@@ -29,7 +31,8 @@ public class RoomManager {
         room_activity = activity;
         room_screen_buttons = layout;
 
-        manager_connection = new BluetoothManagerAdapter(room_activity);
+        //manager_connection = new BluetoothManagerAdapter(room_activity);
+        manager_connection = BluetoothManagerAdapter.getFirstInstance(activity);
         control_buttons = new ArrayList<DeviceControlButton>();
 
         data_base = new DataBaseDAOImpl();
@@ -52,6 +55,7 @@ public class RoomManager {
     }
 
     public void addControlButton(){
+        //manager_connection.sendData((byte) 0);
 
         Intent intent = new Intent(room_activity.getApplicationContext(), ButtonCreationActivity.class);
         //it.putExtra(EXTRA_MANAGER_CONNECTION, manager_connection);
@@ -62,6 +66,9 @@ public class RoomManager {
         control_buttons = data_base.getControlButtons();
 
         for(DeviceControlButton button : control_buttons){
+            //  TODO
+            //  Implementar fábrica de botões
+
             room_screen_buttons.addView(button.generateControlButton(room_activity, manager_connection, room_screen_buttons));
         }
     }

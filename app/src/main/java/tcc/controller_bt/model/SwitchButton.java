@@ -19,7 +19,7 @@ public class SwitchButton extends DeviceControlButton {
     }
 
     @Override
-    public View generateControlButton(final Activity activity, final APIConnectionInterface manager_connection, final ViewGroup room_linear_layout) {
+    public View generateControlButton(final Activity activity, final APIConnectionInterface manager_connection, final ViewGroup room_screen_layout) {
         //final Button new_button = new Button(context);
         final Button new_button = new Button(MyApp.getContext());
 
@@ -32,9 +32,6 @@ public class SwitchButton extends DeviceControlButton {
             public void onClick(View view) {
                 manager_connection.sendData(getControlType());
                 manager_connection.sendData(getLogicalPort());
-
-                //  Para Editar um botão já criado
-                //((Button) room_linear_layout.findViewWithTag(new_button.getTag())).setText("MUDEI");
             }
         });
 
@@ -51,8 +48,8 @@ public class SwitchButton extends DeviceControlButton {
                 Button id_confirm_edit = my_dialog.findViewById(R.id.IdConfirmEdit);
                 Button id_delete_button = my_dialog.findViewById(R.id.IdDeleteButton);
 
-                final LayoutCreatorFacade layout_creator_facade = new LayoutCreatorFacade(activity, id_edit_button_layout, id_confirm_edit);
-                layout_creator_facade.generateSwitchLayout();
+                final LayoutCreatorAdapter layout_creator_adapter = new SwitchLayoutAdapter(activity, id_edit_button_layout, id_confirm_edit);
+                layout_creator_adapter.generateLayout();
 
                 id_delete_button.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -60,7 +57,7 @@ public class SwitchButton extends DeviceControlButton {
                         //  Exclui o botão do banco de dados
                         if(data_base.removeControlButton(SwitchButton.this)){
                             //  Exclui o botão da tela do usuário (layout)
-                            room_linear_layout.removeView(room_linear_layout.findViewWithTag(new_button.getTag()));
+                            room_screen_layout.removeView(room_screen_layout.findViewWithTag(new_button.getTag()));
                         }
 
                         //  Fecha a janela popup
@@ -72,14 +69,14 @@ public class SwitchButton extends DeviceControlButton {
                     @Override
                     public void onClick(View view) {
                         //  Salva as novas configurações no banco de dados
-                        if(layout_creator_facade.updateButton(SwitchButton.this)){
+                        if(layout_creator_adapter.updateButton(SwitchButton.this)){
                             //  Atualiza os dados do botão
-                            SwitchButton updated_button = (SwitchButton) data_base.getControlButtonById(getId());
-                            setName(updated_button.getName());
-                            setLogicalPort(updated_button.getLogicalPort());
+                            //SwitchButton updated_button = (SwitchButton) data_base.getControlButtonById(getId());
+                            //setName(updated_button.getName());
+                            //setLogicalPort(updated_button.getLogicalPort());
 
                             //  Atualiza o botão na tela do usuário (layout)
-                            ((Button) room_linear_layout.findViewWithTag(new_button.getTag())).setText(getName());
+                            ((Button) room_screen_layout.findViewWithTag(new_button.getTag())).setText(getName());
                         }
 
                         //  Fecha a janela popup
