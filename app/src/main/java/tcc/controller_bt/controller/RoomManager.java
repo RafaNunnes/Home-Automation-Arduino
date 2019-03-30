@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import tcc.controller_bt.model.APIConnectionInterface;
 import tcc.controller_bt.model.BluetoothManagerAdapter;
+import tcc.controller_bt.model.ButtonViewFactory;
 import tcc.controller_bt.model.DataBaseDAOImpl;
 import tcc.controller_bt.model.DeviceControlButton;
 import tcc.controller_bt.model.SwitchButton;
@@ -66,18 +67,23 @@ public class RoomManager {
         control_buttons = data_base.getControlButtons();
 
         for(DeviceControlButton button : control_buttons){
-            //  TODO
-            //  Implementar fábrica de botões
+            //  Fábrica de botões é instanciada dependendo do tipo de controle
+            ButtonViewFactory factory = button.getFactory();
 
-            room_screen_buttons.addView(button.generateControlButton(room_activity, manager_connection, room_screen_buttons));
+            room_screen_buttons.addView(factory.generateControlButton(room_activity, manager_connection, room_screen_buttons));
+
+            //room_screen_buttons.addView(button.generateControlButton(room_activity, manager_connection, room_screen_buttons));
         }
     }
 
     public void updateRoomScreen(long id){
         //Quando retornar da activity de criação de botão, adicionar o botão na RoomActivity
-        //room_screen_buttons.addView(button_received.generateControlButton(room_activity.getApplicationContext(),manager_connection,room_screen_buttons));
-        control_buttons.add(data_base.getControlButtonById(id));
-        room_screen_buttons.addView(data_base.getControlButtonById(id).generateControlButton(room_activity, manager_connection, room_screen_buttons));
+        DeviceControlButton control_button = data_base.getControlButtonById(id);
+        control_buttons.add(control_button);
+
+        ButtonViewFactory factory = control_button.getFactory();
+
+        room_screen_buttons.addView(factory.generateControlButton(room_activity, manager_connection, room_screen_buttons));
     }
 
 

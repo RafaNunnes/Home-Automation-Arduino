@@ -1,8 +1,5 @@
 package tcc.controller_bt.model;
 
-import android.app.Activity;
-import android.view.View;
-import android.view.ViewGroup;
 import java.io.Serializable;
 
 public abstract class DeviceControlButton implements Serializable {
@@ -43,6 +40,5 @@ public abstract class DeviceControlButton implements Serializable {
         return logical_port;
     }
 
-    public abstract View generateControlButton(Activity activity, final APIConnectionInterface manager_connection, final ViewGroup room_screen_layout);
-
+    public abstract ButtonViewFactory getFactory();
 }

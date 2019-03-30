@@ -130,32 +130,28 @@ public class BluetoothManagerAdapter implements APIConnectionInterface {
     }
 
     public void requestInfraredData(InfraredLayoutAdapter infrared_layout_adapter){
-        //  Comunicar o sistema embarcado que necessita receber dados
-        //  0 ---> Sinal de envio de dados infravermelho
-        sendData((byte) 0);
+        if(bluetooth_socket != null) {
+            if(bluetooth_socket.isConnected()){
+                //  Comunicar o sistema embarcado que necessita receber dados
+                //  0 ---> Sinal de envio de dados infravermelho
+                sendData((byte) 0);
 
-        //  Comunica a thread que deseja captar a mensagem bluetooth
-        thread_connection_bluetooth.setInfraredFlag(true);
+                //  Comunica a thread que deseja captar a mensagem bluetooth
+                thread_connection_bluetooth.setInfraredFlag(true);
 
-        //  Espera a resposta da Thread
-        while (thread_connection_bluetooth.getInfraredFlag()){}
+                //  Espera a resposta da Thread
+                while (thread_connection_bluetooth.getInfraredFlag()){}
 
-        String msg = thread_connection_bluetooth.getInfraredCodeReceived();
-        System.out.println("\t\tRECEBI A MENSAGEM: " + msg);
+                String msg = thread_connection_bluetooth.getInfraredCodeReceived();
+                System.out.println("\t\tRECEBI A MENSAGEM: " + msg);
 
-        infrared_layout_adapter.decodeInfraredMessageReceived(msg);
-
-        /*synchronized (thread_connection_bluetooth){
-            try{
-                thread_connection_bluetooth.wait();
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                infrared_layout_adapter.decodeInfraredMessageReceived(msg);
+            } else {
+                Toast.makeText(room_activity.getApplicationContext(), "Bluetooth Desconectado", Toast.LENGTH_LONG).show();
             }
-            System.out.println("\t\tRECEBI A MENSAGEM");
-            String msg = thread_connection_bluetooth.getInfraredCodeReceived();
-            infrared_layout_adapter.decodeInfraredMessageReceived(msg);
-        }*/
+        } else {
+            Toast.makeText(room_activity.getApplicationContext(), "Bluetooth Desconectado", Toast.LENGTH_LONG).show();
+        }
     }
 
     public void verifyConnectionStatus() {
