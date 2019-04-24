@@ -3,4 +3,10 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="backgroundColor">#5ea3a3</color>
+    <color name="backgroundColorDark">#2c2828</color>
+    <color name="fontColor">#dfe2e2</color>
+    <color name="deleteButton">#c1224f</color>
+    <color name="confirmButton">#0c907d</color>
+    <color name="darkTheme">#1b1919</color>
 </resources>

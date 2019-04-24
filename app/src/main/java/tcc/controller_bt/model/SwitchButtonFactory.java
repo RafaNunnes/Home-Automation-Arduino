@@ -23,6 +23,7 @@ public class SwitchButtonFactory implements ButtonViewFactory {
         new_button_view.setText(switch_button.name_button);
         //  Tag utilizada para editar/remover o botão
         new_button_view.setTag(switch_button.getId());
+        new_button_view.setPadding(35,35,35,35);
 
         new_button_view.setOnClickListener(new View.OnClickListener() {
             @Override

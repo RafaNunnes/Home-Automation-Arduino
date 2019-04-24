@@ -84,6 +84,7 @@ public class ConnectedThread extends Thread
     public void write(byte input) throws IOException
     {
         mmOutStream.write(input);
+        System.out.println("Dado Enviado: " + input);
     }
 
     public void write(String infrared_code) throws IOException

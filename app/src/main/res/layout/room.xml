@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/backgroundColor"
     tools:context=".view.RoomActivity"
     android:orientation="vertical">
 
@@ -16,6 +17,9 @@
             android:id="@+id/IdControlConnect"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="#FFF"
+            android:textColor="@color/backgroundColor"
+            android:layout_marginRight="1dp"
             android:layout_weight="1"
             android:text="Conectar" />
 
@@ -23,6 +27,9 @@
             android:id="@+id/IdAddButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="#FFF"
+            android:textColor="@color/backgroundColor"
+            android:layout_marginLeft="1dp"
             android:layout_weight="1"
             android:text="Adicionar"/>
 

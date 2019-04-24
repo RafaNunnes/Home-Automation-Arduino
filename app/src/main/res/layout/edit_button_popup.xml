@@ -4,7 +4,8 @@
     android:layout_width="350dp"
     android:layout_height="475dp"
     android:orientation="vertical"
-    android:padding="5dp"
+    android:background="@color/backgroundColor"
+    android:padding="20dp"
     android:layout_gravity="center">
 
     <LinearLayout
@@ -16,6 +17,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:background="@color/backgroundColor"
+            android:textColor="@color/fontColor"
             android:text="Editar Botão"
             android:layout_weight="2"
             android:textSize="20dp"
@@ -29,8 +32,8 @@
             android:layout_weight="1"
             android:text="Excluir"
             android:textSize="15dp"
-            android:background="@color/colorAccent"
-            android:textColor="#FFF"
+            android:background="@color/deleteButton"
+            android:textColor="@color/fontColor"
             android:gravity="center"/>
     </LinearLayout>
 
@@ -52,7 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="Confirmar"
-            android:background="@color/colorPrimary"
+            android:background="@color/confirmButton"
             android:textSize="15dp"
             android:enabled="false"/>
     </LinearLayout>

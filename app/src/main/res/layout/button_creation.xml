@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/backgroundColor"
     tools:context=".view.ButtonCreationActivity">
 
     <LinearLayout
@@ -15,7 +16,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="Escolha o tipo de controle"
-            android:textSize="20dp"
+            android:textSize="25dp"
+            android:textColor="#FFF"
+            android:background="@color/backgroundColor"
             android:textAlignment="center"
             android:gravity="center"/>
     </LinearLayout>
@@ -29,8 +32,9 @@
             android:id="@+id/IdSwitchControl"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginRight="1dp"
             android:textColor="#FFF"
-            android:background="#000"
+            android:background="@color/darkTheme"
             android:layout_weight="1"
             android:text="Controle Chaveado" />
 
@@ -38,8 +42,9 @@
             android:id="@+id/IdDimmerControl"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginHorizontal="1dp"
             android:textColor="#FFF"
-            android:background="#000"
+            android:background="@color/darkTheme"
             android:layout_weight="1"
             android:text="Controle Dimmer"/>
 
@@ -47,8 +52,9 @@
             android:id="@+id/IdInfraredControl"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginLeft="1dp"
             android:textColor="#FFF"
-            android:background="#000"
+            android:background="@color/darkTheme"
             android:layout_weight="1"
             android:text="Controle Infravermelho"/>
 
@@ -72,7 +78,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Confirmar"
-            android:background="@color/colorPrimary"
+            android:background="@color/confirmButton"
             android:textSize="15dp"
             android:enabled="false"/>
     </LinearLayout>

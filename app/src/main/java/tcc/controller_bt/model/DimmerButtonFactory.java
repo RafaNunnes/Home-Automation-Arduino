@@ -23,6 +23,7 @@ public class DimmerButtonFactory implements ButtonViewFactory {
     public View generateControlButton(final Activity activity, final APIConnectionInterface manager_connection, final ViewGroup room_screen_layout) {
         final SeekBar new_seek_bar_view = new SeekBar(activity.getApplicationContext());
         new_seek_bar_view.setMax(120);
+        new_seek_bar_view.setPadding(30,5,50,20);
 
         final LinearLayout package_contents_dimmer = new LinearLayout(activity.getApplicationContext());
         package_contents_dimmer.setOrientation(LinearLayout.VERTICAL);
@@ -48,8 +49,10 @@ public class DimmerButtonFactory implements ButtonViewFactory {
         });
 
         final TextView dimmer_text_name = new TextView(activity.getApplicationContext());
-        dimmer_text_name.setTextColor(Color.rgb(0,0,0));
+        dimmer_text_name.setTextColor(Color.rgb(255,255,255));
         dimmer_text_name.setText(dimmer_button.getName());
+        dimmer_text_name.setTextSize(17);
+        dimmer_text_name.setPadding(25,25,25,0);
 
         dimmer_text_name.setOnLongClickListener(new View.OnLongClickListener() {
             @Override

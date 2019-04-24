@@ -1,7 +1,7 @@
 #include <IRremote.h>   // Adiciona a biblioteca do Infravermelho no algoritmo 
-#include <SoftwareSerial.h>
+//#include <SoftwareSerial.h>
 
-SoftwareSerial ModBluetooth(0, 1); // RX|TX
+//SoftwareSerial ModBluetooth(0, 1); // RX|TX
 IRsend irsend;
 int recvPin = 11; // Pino utilizado no receptor de sinal infravermelho
 IRrecv irrecv(recvPin); // Informa ao IRremote qual porta do Arduino o receptor infravermelho está conectado
@@ -16,7 +16,7 @@ byte content_dimmer;
 
 void setup()
 {
-  ModBluetooth.begin(9600); // Inicia o bluetooth
+  //ModBluetooth.begin(9600); // Inicia o bluetooth
   Serial.begin(9600);       // Iniciando a Serial
   delay(1000);              // Espera um tempo de 1 segundo.
   pinMode(8, OUTPUT);       // Define o pino digital 8 do Arduino como Saída.
@@ -29,17 +29,19 @@ void setup()
 
 void loop()
 {
-  while(!ModBluetooth.available()); // O programa espera receber alguma variável pela serial que será enviada pelo bluetooth
+  while(!Serial.available()); // O programa espera receber alguma variável pela serial que será enviada pelo bluetooth
   
-  if(ModBluetooth.available())
+  if(Serial.available())
   {
-    control_type_received = ModBluetooth.read();
+    //control_type_received = ModBluetooth.read();
+    control_type_received = Serial.read();
     delay(20);
   }
     
-  if(ModBluetooth.available())
+  if(Serial.available())
   {
-    logical_port_received = ModBluetooth.read();
+    //logical_port_received = ModBluetooth.read();
+    logical_port_received = Serial.read();
     delay(20);
   }
 
@@ -60,14 +62,14 @@ void loop()
     case 3:   // Código de ativação do circuito Infravermelho
       unsigned long infrared_code;
       
-      if(ModBluetooth.available())
+      if(Serial.available())
       {
-        format_type_received = ModBluetooth.read();
+        format_type_received = Serial.read();
       }
 
-      if(ModBluetooth.available())
+      if(Serial.available())
       {
-        num_bits_received = ModBluetooth.read();
+        num_bits_received = Serial.read();
       }
       
       infrared_code = getStringInput().toInt();
@@ -83,11 +85,11 @@ void loop()
       byte dimmer_value = 0;
       while(true)
       {
-        while(!ModBluetooth.available()); // O programa espera receber alguma variável pela serial que será enviada pelo bluetooth
+        while(!Serial.available()); // O programa espera receber alguma variável pela serial que será enviada pelo bluetooth
         
-        if(ModBluetooth.available())
+        if(Serial.available())
         {
-          dimmer_value = ModBluetooth.read();
+          dimmer_value = Serial.read();
         }
         
         if(dimmer_value == 255)
@@ -108,9 +110,9 @@ String getStringInput()
   String content_serial = "";
   char in_data;
   
-  while(ModBluetooth.available() > 0)
+  while(Serial.available() > 0)
   {
-    in_data = ModBluetooth.read();
+    in_data = Serial.read();
   
     if(in_data != '\n')
     {
@@ -287,14 +289,40 @@ void infraredSignalReader()
   }
 }
 
+// Cálculo do ângulo de disparo :: 60Hz -> 8.33ms (1/2 do Ciclo)
+// (8333us - 8.33us) / 128 = 65 (Aprox.)
+
+  /***
+   * Cálculo dos delay por nível de brilho em microssegundos
+   * 
+   * É calculado baseado na frequência da rede (60Hz) e na
+   * quantidade de níveis de brilho que se deseja.
+   * 
+   * Como o circuito Dimmer necessita dar o disparo 2 vezes
+   * por ciclo de onda:
+   * Frequência de disparo = 2 * frequência da rede = 2 * 60Hz
+   * Frequência de disparo = 120Hz
+   * Período = 1/120Hz = 8.33ms = 8333us
+   * 
+   * Para calcular o Delay por Nível de Brilho basta dividir o 
+   * período pela quantidade desejada de níveis de brilho:
+   * Delay por Brilho = (8333us - 8.33us)/128 = 65us aproximadamente
+   * OBS:. 8.33us é o tempo computado de disparo do TRIAC 
+   * 
+   * Logo, para cada nível de brilho o TRIAC será disparado com uma
+   * diferença de 65us
+   */
+
 void zeroCrossing() // Código para Funcionamento do Dimmer
 {
   if(zero_crossing_enabled)
-  {
-    int dimtime = (65 * dimming);  // Após passar o tempo calculado para o ângulo de disparo   
-    delayMicroseconds(dimtime);    // O algoritmo envia um pulso de 8,33 microssegundos para o gate do TRIAC 
+  {   
+    // Após passar o tempo calculado para o ângulo de disparo
+    // O algoritmo envia um pulso de 8,33 microssegundos para o gate do TRIAC     
+    int dimtime = (65 * dimming);
+    delayMicroseconds(dimtime);    
     digitalWrite(logical_port_dimmer, HIGH);
-    delayMicroseconds(8.33);        
+    delayMicroseconds(8.33);       // Tempo de disparo                  
     digitalWrite(logical_port_dimmer, LOW);  
   } 
 }
