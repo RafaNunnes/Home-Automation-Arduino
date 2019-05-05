@@ -13,13 +13,38 @@ import android.widget.TextView;
 
 import tcc.controller_bt.R;
 
+/**
+ * Classe que implementa a Interface ButtonViewFactory, ou seja, a
+ * abstração de uma Fábrica segundo o padrão de projeto Abstract Factory.
+ *
+ * Esta classe representa a fábrica de componentes view Button, pois o
+ * tipo Botão de Controle é o Dimmer.
+ */
 public class DimmerButtonFactory implements ButtonViewFactory {
     DimmerButton dimmer_button;
 
+    /**
+     * Construtor da Classe.
+     *
+     * A fábrica de Botões de Controle possui a finalidade de transformar uma
+     * abstração do Botão de Controle na forma de classe em um componente view
+     * de fato para ser exibido na Tela Principal da aplicação.
+     *
+     * @param control_button Abstração do Botão de Controle Dimmer
+     */
     public DimmerButtonFactory(DeviceControlButton control_button){
         dimmer_button = (DimmerButton) control_button;
     }
 
+    /**
+     * Método de fabricação do componente view
+     *
+     * @param activity Activity onde será exibido a View fabricada (RoomActivity)
+     * @param manager_connection Gerente de Conexão utilizado no Botão de Controle
+     * @param room_screen_layout Layout específico da Activity onde será exibido a View fabricada
+     *
+     * @return Componente view fabricado
+     */
     public View generateControlButton(final Activity activity, final APIConnectionInterface manager_connection, final ViewGroup room_screen_layout) {
         final SeekBar new_seek_bar_view = new SeekBar(activity.getApplicationContext());
         new_seek_bar_view.setMax(120);
@@ -29,6 +54,16 @@ public class DimmerButtonFactory implements ButtonViewFactory {
         package_contents_dimmer.setOrientation(LinearLayout.VERTICAL);
         package_contents_dimmer.setTag(dimmer_button.getId());
 
+        /**
+         * Evento OnSeekBarChangeListener do Botão de Controle Dimmer.
+         *
+         * Ao iniciar a interação com o componente SeekBar na Tela Principal, a aplicação
+         * enviará o comando de controle do tipo Dimmer, e logo em seguida, enviará todos
+         * os valores do SeekBar à medida que o usuário arrasta o cursor.
+         *
+         * Ao final da interação, quando o usuário solta o componente SeekBar, a aplicação
+         * enviará um comando para o Sistema Embarcado informando que a comunicação terminou.
+         */
         new_seek_bar_view.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
             @Override
@@ -48,12 +83,21 @@ public class DimmerButtonFactory implements ButtonViewFactory {
             }
         });
 
+        //  Fabricação do Texto que será exibido acima do componente SeekBar, referindo-se
+        //  ao nome do Controle escolhido pelo usuário no momento de sua criação
         final TextView dimmer_text_name = new TextView(activity.getApplicationContext());
         dimmer_text_name.setTextColor(Color.rgb(255,255,255));
         dimmer_text_name.setText(dimmer_button.getName());
         dimmer_text_name.setTextSize(17);
         dimmer_text_name.setPadding(25,25,25,0);
 
+        /**
+         * Evento OnLongClick (Pressionar) do Botão de Controle fabricado.
+         *
+         * Ao ser pressionado o Texto com o nome do Botão de Controle, será exibida
+         * uma janela para edição do botão em questão ou a sua remoção da aplicação
+         * bem como do Banco de Dados
+         */
         dimmer_text_name.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -89,23 +133,15 @@ public class DimmerButtonFactory implements ButtonViewFactory {
                     public void onClick(View view) {
                         //  Salva as novas configurações no banco de dados
                         if(layout_creator_adapter.updateButton(dimmer_button)){
+                            //  Atualiza o botão na tela do usuário (layout)
                             dimmer_text_name.setText(dimmer_button.getName());
                         }
-
-                        //  Atualiza os dados do botão
-                        //SwitchButton updated_button = (SwitchButton) data_base.getControlButtonById(getId());
-                        //setName(updated_button.getName());
-                        //setLogicalPort(updated_button.getLogicalPort());
-
-                        //  Atualiza o botão na tela do usuário (layout)
-                        //((SeekBar) room_screen_layout.findViewWithTag(new_seek_bar_view.getTag())).setText(getName());
 
                         //  Fecha a janela popup
                         my_dialog.dismiss();
                     }
                 });
 
-                //my_dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 my_dialog.show();
 
                 return true;

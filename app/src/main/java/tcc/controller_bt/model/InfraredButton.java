@@ -1,10 +1,24 @@
 package tcc.controller_bt.model;
 
+/**
+ * Classe que implementa a abstração do Botão de Controle do tipo Infravermelho.
+ */
 public class InfraredButton extends DeviceControlButton {
     private String infrared_code;
     private byte format_type;
     private byte num_bits;
 
+    /**
+     * Construtor do Classe InfraredButton (Botão Infravermelho)
+     *
+     * @param id ID do Botão gerado automaticamente no Banco de Dados
+     * @param name Nome do Botão escolhido pelo usuário
+     * @param type Tipo de controle (Infravermelho)
+     * @param port Porta Lógica escolhida pelo Sistema Embarcado para controle do Infravermelho
+     * @param code Código Infravermelho recebido pelo Sistema Embarcado
+     * @param format Formato do fabricante do controle infravermelho
+     * @param bits Número de bits do código infravermelho
+     */
     public InfraredButton(long id, String name, byte type, byte port, String code, byte format, byte bits){
         setControlType(type);
         setLogicalPort(port);
@@ -15,7 +29,11 @@ public class InfraredButton extends DeviceControlButton {
         this.id = id;
     }
 
-    @Override
+    /**
+     * Método de retorno da Fábrica de Botões Infravermelho (InfraredButtonFactory)
+     *
+     * @return Fábrica de Botões Infravermelho
+     */
     public ButtonViewFactory getFactory() {
         return new InfraredButtonFactory(InfraredButton.this);
     }

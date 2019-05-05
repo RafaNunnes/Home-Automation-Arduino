@@ -9,15 +9,39 @@ import android.widget.GridLayout;
 
 import tcc.controller_bt.R;
 
+/**
+ * Classe que implementa a Interface ButtonViewFactory, ou seja, a
+ * abstração de uma Fábrica segundo o padrão de projeto Abstract Factory.
+ *
+ * Esta classe representa a fábrica de componentes view Button, pois o
+ * tipo Botão de Controle é o Chaveado.
+ */
 public class SwitchButtonFactory implements ButtonViewFactory {
     SwitchButton switch_button;
 
+    /**
+     * Construtor da Classe.
+     *
+     * A fábrica de Botões de Controle possui a finalidade de transformar uma
+     * abstração do Botão de Controle na forma de classe em um componente view
+     * de fato para ser exibido na Tela Principal da aplicação.
+     *
+     * @param control_button Abstração do Botão de Controle Chaveado
+     */
     public SwitchButtonFactory(DeviceControlButton control_button){
         switch_button = (SwitchButton) control_button;
     }
 
+    /**
+     * Método de fabricação do componente view
+     *
+     * @param activity Activity onde será exibido a View fabricada (RoomActivity)
+     * @param manager_connection Gerente de Conexão utilizado no Botão de Controle
+     * @param room_screen_layout Layout específico da Activity onde será exibido a View fabricada
+     *
+     * @return Componente view fabricado
+     */
     public View generateControlButton(final Activity activity, final APIConnectionInterface manager_connection, final ViewGroup room_screen_layout) {
-        //final Button new_button_view = new Button(context);
         final Button new_button_view = new Button(activity.getApplicationContext());
 
         new_button_view.setText(switch_button.name_button);
@@ -25,14 +49,28 @@ public class SwitchButtonFactory implements ButtonViewFactory {
         new_button_view.setTag(switch_button.getId());
         new_button_view.setPadding(35,35,35,35);
 
+        /**
+         * Evento onClick do Botão de Controle fabricado.
+         *
+         * Ao receber um evento de Click, o botão enviará as informações de
+         * controle para o Sistema Embarcado tratá-las
+         */
         new_button_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //  Envio dos dados para o Sistema Embarcado através do Gerente de Conexão
                 manager_connection.sendData(switch_button.getControlType());
                 manager_connection.sendData(switch_button.getLogicalPort());
             }
         });
 
+        /**
+         * Evento OnLongClick (Pressionar) do Botão de Controle fabricado.
+         *
+         * Ao ser pressionado o Botão de Controle, será exibida uma janela para
+         * edição do botão em questão ou a sua remoção da aplicação bem como do
+         * Banco de Dados
+         */
         new_button_view.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -68,11 +106,6 @@ public class SwitchButtonFactory implements ButtonViewFactory {
                     public void onClick(View view) {
                         //  Salva as novas configurações no banco de dados
                         if(layout_creator_adapter.updateButton(switch_button)){
-                            //  Atualiza os dados do botão
-                            //SwitchButton updated_button = (SwitchButton) data_base.getControlButtonById(getId());
-                            //setName(updated_button.getName());
-                            //setLogicalPort(updated_button.getLogicalPort());
-
                             //  Atualiza o botão na tela do usuário (layout)
                             ((Button) room_screen_layout.findViewWithTag(new_button_view.getTag())).setText(switch_button.getName());
                         }
@@ -82,13 +115,15 @@ public class SwitchButtonFactory implements ButtonViewFactory {
                     }
                 });
 
-                //my_dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 my_dialog.show();
 
                 return true;
             }
         });
 
+        /**
+         * TODO: Funcionalidade futura para mover o componente view pela Tela Principal da Aplicação
+         */
         /*new_button_view.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motion_event) {

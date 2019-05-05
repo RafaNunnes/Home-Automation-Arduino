@@ -1,12 +1,10 @@
 #include <IRremote.h>   // Adiciona a biblioteca do Infravermelho no algoritmo 
-//#include <SoftwareSerial.h>
 
-//SoftwareSerial ModBluetooth(0, 1); // RX|TX
 IRsend irsend;
 int recvPin = 11; // Pino utilizado no receptor de sinal infravermelho
 IRrecv irrecv(recvPin); // Informa ao IRremote qual porta do Arduino o receptor infravermelho está conectado
 
-boolean zero_crossing_enabled = false;
+boolean zero_crossing_enabled = false;  // Detecção de Zero da Rede desabilitada
 int logical_port_dimmer;  // Pino digital definido como controlador do MOC3011
 volatile int dimming = 120; // O dimmer começa com a menor potência fornecida, ou seja, com a carga fora de funcionamento
 
@@ -16,42 +14,39 @@ byte content_dimmer;
 
 void setup()
 {
-  //ModBluetooth.begin(9600); // Inicia o bluetooth
   Serial.begin(9600);       // Iniciando a Serial
   delay(1000);              // Espera um tempo de 1 segundo.
-  pinMode(8, OUTPUT);       // Define o pino digital 8 do Arduino como Saída.
-  pinMode(7, OUTPUT);       // Define o pino digital 7 do Arduino como Saída.
-  pinMode(6, OUTPUT);       // Define o pino digital 6 do Arduino como Saída.
-  pinMode(5, OUTPUT);       // Define o pino digital 5 do Arduino como Saída.
+  
+  // Define os pinos digitais, de 3 à 13, como pinos de saída do Arduino
+  for(int port = 3; port <= 13; port++)
+  {
+    pinMode(port, OUTPUT);
+  }
+  
   irrecv.enableIRIn();      // Inicializa o receptor infravermelho.
   attachInterrupt(0, zeroCrossing, RISING); //Inicio da interrupção quando a carga está conectada à rede doméstica.
 }
 
 void loop()
 {
-  while(!Serial.available()); // O programa espera receber alguma variável pela serial que será enviada pelo bluetooth
+  while(!Serial.available()); // O programa espera receber algum dado pela serial que será enviada por conexão bluetooth
   
   if(Serial.available())
   {
-    //control_type_received = ModBluetooth.read();
-    control_type_received = Serial.read();
+    control_type_received = Serial.read();  // O primeiro dado recebido é referente ao tipo de controle
     delay(20);
   }
     
   if(Serial.available())
   {
-    //logical_port_received = ModBluetooth.read();
-    logical_port_received = Serial.read();
+    logical_port_received = Serial.read();  // O segundo dado recebido é referente à porta lógica manipulada
     delay(20);
   }
 
-  /*
-  Serial.print("TIPO CONTROLE:  ");
-  Serial.println(control_type_received);
-  Serial.print("PORTA LÓGICA:   ");
-  Serial.println(logical_port_received);
-  */
-  
+  /**
+   * Dependendo do tipo de controle recebido, o fluxo de execução do programa será modificado
+   * para se adequar ao tipo de controle recebido
+   */
   switch(control_type_received)
   {      
     case 0:   // Código de mapeamento de controle remoto
@@ -64,15 +59,15 @@ void loop()
       
       if(Serial.available())
       {
-        format_type_received = Serial.read();
+        format_type_received = Serial.read(); // Dado referente ao formato do fabricante do controle infravermelho
       }
 
       if(Serial.available())
       {
-        num_bits_received = Serial.read();
+        num_bits_received = Serial.read();  // Número de bits do código infravermelho
       }
       
-      infrared_code = getStringInput().toInt();
+      infrared_code = getStringInput().toInt(); // Obtem-se o código infravermelho através da função getStringInput()
     
       infraredCircuit(infrared_code, format_type_received, num_bits_received);
       break;   
@@ -89,22 +84,25 @@ void loop()
         
         if(Serial.available())
         {
-          dimmer_value = Serial.read();
+          dimmer_value = Serial.read(); // Recebimento do valor de variação do Dimmer em tempo real
         }
         
-        if(dimmer_value == 255)
+        if(dimmer_value == 255) // Encerra-se o recebimento de valores ao receber o valor default: 255
         {
           break;
         }
 
         dimmerCircuit(logical_port_received, dimmer_value);
-        //Serial.println(dimmer_value);
       }
       break;
   }
   
 }
 
+/**
+ * Função responsável por ler e armazenar uma String recebida como
+ * Input da aplicação Android
+ */
 String getStringInput()
 {
   String content_serial = "";
@@ -150,6 +148,13 @@ void dimmerCircuit(byte logical_port, byte content)
 
 void infraredCircuit(unsigned long code, int format_type, byte num_bits)
 {
+  boolean previous_state = zero_crossing_enabled;
+
+  if(zero_crossing_enabled)
+  {
+    zero_crossing_enabled = false;     // Desabilita o cálculo de passagem por zero da rede
+    delay(10);
+  }
   /****************************
    * Format Types: 
    * Value: 127 ---> SAMSUNG
@@ -159,12 +164,6 @@ void infraredCircuit(unsigned long code, int format_type, byte num_bits)
    * Value: 123 ---> RC6
    * Value: 122 ---> UNKNOWN
    ****************************/
-  /* 
-  Serial.println("Configurações");
-  Serial.println(code);
-  Serial.println(format_type);
-  Serial.println(num_bits);
-  */  
   switch(format_type)
   {
     case 127:
@@ -196,12 +195,18 @@ void infraredCircuit(unsigned long code, int format_type, byte num_bits)
       //Serial.println("Formato desconhecido!");
       break;  
   }
+  
+  zero_crossing_enabled = previous_state; // Retorna ao estado anterior do cálculo de passagem por zero da rede
 }
 
+/**
+ * Função que extrai e codifica o tipo do fabricante do
+ * controle remoto
+ */
 int encoding (decode_results *results)
 {
   switch (results->decode_type) {
-    default:
+    //default:
     case SAMSUNG:
       //Serial.print("SAMSUNG");
       return 127;    
@@ -220,37 +225,25 @@ int encoding (decode_results *results)
     case UNKNOWN:      
       //Serial.print("UNKNOWN");
       return 122;
-    case DISH:
-      break ;
-    case SHARP:
-      break ;
-    case JVC:
-      break ;
-    case SANYO:
-      break ;
-    case MITSUBISHI:
-      break ;
-    case LG:
-      break ;
-    case WHYNTER: 
-      break ;
-    case AIWA_RC_T501:
-      break ;
-    case PANASONIC:
-      break ;
-    case DENON:
-      break ;
-    
-    return 255;
+    default:
+      return 255;
   }
 }
 
+/**
+ * Função de envio de dados para a aplicação Android
+ */
 void sendMessageToAndroid(String msg){
   msg.concat(",");
   Serial.print(msg);
   delay(10);
 }
 
+/**
+ * Função responável pela manipulação da leitura dos sinais infravermelho
+ * captados pelo LED receptor de infravermelho, e o seu respectivo envio
+ * das informaçeõs coletadas para a aplicação Android
+ */
 void infraredSignalReader()
 {
   decode_results results;   // Onde será armazenado os sinais recebidos pelo infravermelho
@@ -262,7 +255,7 @@ void infraredSignalReader()
     {
       // Checa se o buffer está cheio
       if (results.overflow) {
-        //Serial.println("IR code too long. Edit IRremoteInt.h and increase RAWBUF#");
+        // Código Infravermelho muito longo
         break;
       }
       
@@ -271,19 +264,11 @@ void infraredSignalReader()
       sendMessageToAndroid(String(results.value));
       sendMessageToAndroid(String(format));
       sendMessageToAndroid(String(results.bits));
-      //sendMessageToAndroid("#");
       Serial.print("#");
       delay(50);
-      irrecv.resume();          // Prepara para receber os próximos valores
-      delay(1000);
       
-      /*Serial.print("Formato: ");
-      Serial.println(format);
-      //Serial.println(results.decode_type);
-      Serial.print("Código: ");
-      Serial.println(results.value, HEX);
-      Serial.print("Número de bits: ");
-      Serial.println(results.bits, DEC);*/        
+      irrecv.resume();          // Prepara para receber os próximos valores
+      delay(1000);       
       break;
     }
   }
@@ -293,7 +278,7 @@ void infraredSignalReader()
 // (8333us - 8.33us) / 128 = 65 (Aprox.)
 
   /***
-   * Cálculo dos delay por nível de brilho em microssegundos
+   * Cálculo do delay por nível de brilho em microssegundos
    * 
    * É calculado baseado na frequência da rede (60Hz) e na
    * quantidade de níveis de brilho que se deseja.
